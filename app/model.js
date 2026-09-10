@@ -4,6 +4,43 @@
  * bundle README for the full spec). No DOM, no framework dependency.
  */
 
+/**
+ * Country data (CC). Per-field provenance:
+ *
+ *   pop, growth, inflation, lfp, workingAge, gdp
+ *     World Bank / World Development Indicators, via the API documented at
+ *     https://documents.worldbank.org/en/publication/documents-reports/api
+ *     (the same data the wbstats R package wraps, see
+ *     https://cran.r-project.org/web/packages/wbstats/vignettes/wbstats.html).
+ *     Indicator codes: pop=SP.POP.TOTL, growth=SP.POP.GROW,
+ *     inflation=FP.CPI.TOTL.ZG, lfp=SL.TLF.CACT.ZS,
+ *     workingAge=SP.POP.1564.TO.ZS, gdp=NY.GDP.MKTP.CD.
+ *
+ *     CAVEAT: the values below are a best-available snapshot, not a
+ *     verified live pull — this project's environment has no network
+ *     access to api.worldbank.org (outbound egress is allowlisted and
+ *     that host isn't on it). Run `node app/scripts/fetch-worldbank-data.mjs`
+ *     from an environment with network access to regenerate this table
+ *     from a live API call, then replace these six fields per country
+ *     (leave informal/spend/expPct/expLevel/expSrc as they are — the
+ *     script deliberately doesn't touch them, see below).
+ *
+ *   expPct, expLevel, expSrc (government expenditure, % of GDP)
+ *     NOT from the World Bank — IMF Regional Economic Outlook 2024, except
+ *     India (Reserve Bank of India central-government expenditure). See
+ *     the handoff README's "Data provenance" section for why: the original
+ *     design deliberately used IMF/RBI actuals here instead of a World
+ *     Bank/GDP-ratio assumption.
+ *
+ *   informal (% of workers in informal employment)
+ *     NOT from the World Bank — informal-employment share is WIEGO/ILO's
+ *     domain, not a standard WDI indicator. Structural placeholder pending
+ *     WIEGO's own figures (per handoff README).
+ *
+ *   spend (default for the hypothetical "assume % of GDP" slider)
+ *     Set close to expPct so toggling between "reported" and "assumed"
+ *     starts from roughly the same number; not an independent indicator.
+ */
 const CC = {
   Kenya: { pop: 54027487, growth: 1.91, inflation: 7.66, lfp: 74.2, workingAge: 59.32, gdp: 113420008179, informal: 80, spend: 24, expPct: 23.26, expLevel: "general government", expSrc: "IMF Regional Economic Outlook, 2024" },
   Ghana: { pop: 33475870, growth: 1.90, inflation: 23.2, lfp: 66.5, workingAge: 60.0, gdp: 76370000000, informal: 88, spend: 22, expPct: 23.18, expLevel: "general government", expSrc: "IMF Regional Economic Outlook, 2024" },
