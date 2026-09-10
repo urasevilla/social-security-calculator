@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics><meta name="design_doc_mode" content="canvas"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;0,900;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet"><style>
+body{margin:0;background:#EDE8DE;font-family:Lato,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#8B5B29}a:hover{color:#FF671F}
+.dv-turn{padding:40px 44px 32px;border-bottom:1px solid rgba(94,81,77,.14);scroll-margin-top:16px}
+.dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 20px}
+.dv-tid{font:700 10px "IBM Plex Mono",monospace;padding:3px 7px;background:#3A312B;color:#fff;border-radius:4px;text-decoration:none}
+.dv-tname{font:700 13px/1.2 Lato,sans-serif;color:#3A312B}
+.dv-opts{display:flex;flex-wrap:wrap;gap:32px;align-items:flex-start}
+.dv-opt{flex:none;max-width:100%;display:flex;flex-direction:column;gap:9px;scroll-margin-top:16px}
+.dv-oid{font:700 10.5px "IBM Plex Mono",monospace;padding:3px 7px;background:rgba(94,81,77,.14);color:#3A312B;border-radius:5px;text-decoration:none}
+.dv-olabel{display:flex;align-items:baseline;gap:8px;font:400 11.5px/1.3 Lato,sans-serif;color:#796E65}
+.dv-card{max-width:100%;background:#FBF8F3;border:1px solid rgba(94,81,77,.16);border-radius:10px;box-shadow:0 2px 10px rgba(58,49,43,.07);overflow:hidden}
+.dv-opt:target .dv-oid{background:#FF671F;color:#2A211B}
+.dv-next{margin:22px 0 0;font:12.5px/1.6 Lato,sans-serif;color:#796E65}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:transparent;cursor:pointer;margin:0;display:block}
+input[type=range]::-webkit-slider-runnable-track{height:5px;border-radius:3px;background:rgba(94,81,77,.2)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:17px;height:17px;margin-top:-6px;border-radius:50%;background:#FF671F;border:2.5px solid #FBF8F3;box-shadow:0 1px 4px rgba(58,49,43,.35)}
+input[type=range]:focus-visible::-webkit-slider-thumb{outline:2px solid #8B5B29;outline-offset:2px}
+input[type=range]::-moz-range-track{height:5px;border-radius:3px;background:rgba(94,81,77,.2)}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#FF671F;border:2.5px solid #FBF8F3}
+input[type=range].on-dark::-webkit-slider-runnable-track{background:rgba(251,248,243,.3)}
+input[type=range].on-dark::-webkit-slider-thumb{border-color:#3A312B}
+input[type=range].on-dark::-moz-range-track{background:rgba(251,248,243,.3)}
+input[type=range].on-dark::-moz-range-thumb{border-color:#3A312B}
+.tnum{font-variant-numeric:tabular-nums}
+</style></helmet>
+
+<section class="dv-turn" id="t1">
+<div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">WIEGO Social Security Subsidy Cost Calculator — step-through walkthrough</span></div>
+<div class="dv-opts">
+
+<div class="dv-opt" id="1c">
+<div class="dv-olabel"><a class="dv-oid" href="#1c">1c</a>Step-through story — one question per screen, ends in a shareable summary; for advocacy and press, not analysts</div>
+<div class="dv-card" style="width:820px">
+<div style="padding:20px 30px 14px;border-bottom:1px solid rgba(94,81,77,.14);display:flex;align-items:center;gap:16px">
+<div style="width:90px;height:32px;flex:none;border:1px dashed rgba(94,81,77,.4);border-radius:4px;display:flex;align-items:center;justify-content:center;background:repeating-linear-gradient(135deg,rgba(94,81,77,.08) 0 6px,transparent 6px 12px);font:500 8px 'IBM Plex Mono',monospace;color:#796E65">WIEGO LOGO</div>
+<div style="display:flex;gap:5px;flex:1;flex-wrap:wrap">
+<sc-for list="{{ c.steps }}" as="s" hint-placeholder-count="5">
+<button onClick="{{ s.onClick }}" style="flex:1;min-width:66px;background:{{ s.bg }};border:1px solid {{ s.bd }};border-radius:6px;padding:7px 8px 8px;cursor:pointer;text-align:left" style-hover="border-color:#8B5B29">
+<span style="display:block;height:4px;border-radius:2px;background:{{ s.bar }}"></span>
+<span style="display:block;font:700 9.5px 'IBM Plex Mono',monospace;letter-spacing:.04em;color:{{ s.fg }};margin-top:6px">{{ s.label }}</span>
+</button>
+</sc-for>
+</div>
+</div>
+
+<div style="padding:20px 34px 0">
+<div style="background:#EFDBB2;border:1px solid rgba(139,91,41,.3);border-radius:10px;padding:18px 20px 16px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:14px">
+<h1 style="font:900 17px/1.25 Lato,sans-serif;color:#3A312B;margin:0;letter-spacing:-.01em">Social Security Subsidy Cost Calculator</h1>
+<button onClick="{{ c.toggleAbout }}" style="flex:none;background:none;border:1px solid rgba(139,91,41,.45);color:#8B5B29;border-radius:6px;padding:5px 11px;font:700 11px Lato,sans-serif;cursor:pointer" style-hover="background:#8B5B29;color:#fff">{{ c.aboutSign }}</button>
+</div>
+<sc-if value="{{ c.aboutOpen }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:11px;margin-top:12px;max-width:74ch">
+<p style="font:400 13.5px/1.62 Lato,sans-serif;color:#3A312B;margin:0">Social security is a human right and labour right for all workers, including workers in informal employment. For workers in formal wage employment, the affordability of social insurance contributions and adequacy of benefits is generally ensured by dividing contributions between themselves and their employer.</p>
+<p style="font:400 13.5px/1.62 Lato,sans-serif;color:#5E514D;margin:0">Self-employed workers, on the other hand, are often expected to shoulder the entire burden of paying contributions, which results in unaffordably high contribution rates or contribution payments that are too low to yield adequate benefits. This is a major barrier for the nearly 80 percent of informal workers in developing countries that are self-employed.</p>
+<p style="font:400 13.5px/1.62 Lato,sans-serif;color:#5E514D;margin:0">The most effective way to address this affordability gap is for governments to subsidize social insurance contributions for low-income informal workers. Global evidence shows that countries that have managed to significantly expand social insurance coverage to informal workers have recognized this and implemented various forms of subsidies.</p>
+<p style="font:700 13.5px/1.62 Lato,sans-serif;color:#8B5B29;margin:0">This calculator helps estimate the costs of different subsidy options, as well as the impacts of those on workers' social security benefits.</p>
+<p style="font:400 12px/1.55 Lato,sans-serif;color:#796E65;margin:2px 0 0">Five steps: who is covered, what a contribution costs, who pays which part, how many enrol, and what it adds up to. Every figure updates as you change an assumption, and you can download the full year-by-year data at the end.</p>
+</div>
+</sc-if>
+</div>
+</div>
+<div style="padding:22px 34px 26px;min-height:376px;display:flex;flex-direction:column">
+<sc-if value="{{ c.is1 }}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="font:700 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#FF671F">STEP 1 · WHO ARE WE COVERING?</div>
+<h2 style="font:900 30px/1.15 Lato,sans-serif;color:#3A312B;margin:9px 0 12px;letter-spacing:-.02em;text-wrap:pretty">In {{ c.country }}, <span style="color:#FF671F">{{ c.informalM }}</span> people work informally.</h2>
+<p style="font:400 14.5px/1.6 Lato,sans-serif;color:#5E514D;margin:0 0 20px;max-width:58ch">That is {{ c.informalPct }} of everyone who works — mostly self-employed, and mostly expected to pay the whole social insurance contribution alone.</p>
+<div style="display:grid;grid-template-columns:repeat(25,1fr);gap:4px;max-width:520px;margin-bottom:20px">
+<sc-for list="{{ c.dots }}" as="d" hint-placeholder-count="50">
+<span style="display:block;aspect-ratio:1;border-radius:50%;background:{{ d.fill }}"></span>
+</sc-for>
+</div>
+<div style="border-top:1px solid rgba(94,81,77,.14);padding-top:16px;margin-bottom:18px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:9px">
+<span style="font:400 12.5px Lato,sans-serif;color:#5E514D">Who is eligible for the subsidy?</span>
+<div style="display:flex;gap:6px">
+<sc-for list="{{ c.scopeToggle }}" as="o" hint-placeholder-count="2">
+<button onClick="{{ o.onClick }}" style="padding:6px 12px;border-radius:6px;font:700 12px Lato,sans-serif;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};border:1px solid {{ o.bd }}">{{ o.label }}</button>
+</sc-for>
+</div>
+</div>
+<sc-if value="{{ c.subgroupOn }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-bottom:12px">
+<sc-for list="{{ c.subgroups }}" as="g" hint-placeholder-count="4">
+<button onClick="{{ g.onClick }}" style="text-align:left;cursor:pointer;background:{{ g.bg }};border:1px solid {{ g.bd }};border-radius:7px;padding:10px 11px;font-family:Lato,sans-serif" style-hover="border-color:#8B5B29">
+<span style="display:block;font:900 12.5px Lato,sans-serif;color:{{ g.fg }}">{{ g.name }}</span>
+<span style="display:block;font:400 11px/1.4 Lato,sans-serif;color:#796E65;margin-top:3px">{{ g.note }}</span>
+</button>
+</sc-for>
+</div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-subpct" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Size of that group</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.subgroupPctLabel }}</span></div>
+<input id="c-subpct" type="range" min="1" max="100" step="1" value="{{ c.subgroupPct }}" onChange="{{ c.setSubgroupPct }}" aria-label="Size of the subgroup as a share of informal workers">
+<p style="font:400 12px/1.5 Lato,sans-serif;color:#796E65;margin:8px 0 0">Eligible pool: <strong style="color:#3A312B">{{ c.eligibleM }}</strong> — {{ c.scopeLabel }}.</p>
+<sc-if value="{{ c.subgroupHasEmployer }}" hint-placeholder-val="{{ false }}">
+<p style="font:400 12px/1.5 Lato,sans-serif;color:#8B5B29;margin:6px 0 0">{{ c.subgroupEmployerNote }}</p>
+</sc-if>
+</div>
+</sc-if>
+</div>
+<div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-end">
+<div style="flex:1;min-width:240px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-informal" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Share of workers in informal employment</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.informalPct }}</span></div>
+<input id="c-informal" type="range" min="10" max="95" step="1" value="{{ c.informal }}" onChange="{{ c.setInformal }}" aria-label="Share of workers in informal employment">
+</div>
+<div style="display:flex;flex-direction:column;gap:4px">
+<label for="c-country" style="font:700 9px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#796E65">COUNTRY</label>
+<select id="c-country" value="{{ c.country }}" onChange="{{ c.setCountry }}" style="font:700 13px Lato,sans-serif;color:#3A312B;background:#EFDBB2;border:none;border-radius:6px;padding:8px 11px">
+<sc-for list="{{ countries }}" as="cc" hint-placeholder-count="3"><option value="{{ cc }}">{{ cc }}</option></sc-for>
+</select>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ c.is2 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font:700 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#FF671F">STEP 2 · WHAT DOES COVER COST?</div>
+<h2 style="font:900 30px/1.15 Lato,sans-serif;color:#3A312B;margin:9px 0 12px;letter-spacing:-.02em;text-wrap:pretty">A floor of <span style="color:#FF671F">{{ c.contribLabel }}</span> a month buys a contribution record.</h2>
+<p style="font:400 14.5px/1.6 Lato,sans-serif;color:#5E514D;margin:0 0 22px;max-width:58ch">That is {{ c.annualLabel }} a year per worker — roughly {{ c.incomePct }} of an average income here. Paid alone, that is the affordability gap.</p>
+<div style="background:#EFDBB2;border-radius:9px;padding:18px 20px;margin-bottom:22px">
+<div style="font:700 10px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:#5E514D;margin-bottom:8px">SHARE OF A MONTHLY INCOME</div>
+<div style="height:26px;border-radius:5px;background:rgba(94,81,77,.16);overflow:hidden;display:flex"><div style="width:{{ c.incomeBar }};background:#8B5B29;height:100%"></div></div>
+<div style="display:flex;justify-content:space-between;font:400 11.5px Lato,sans-serif;color:#5E514D;margin-top:7px"><span>Contribution {{ c.contribLabel }}</span><span>Average monthly income {{ c.incomeLabel }}</span></div>
+</div>
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-contrib" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Monthly minimum contribution (worker + government)</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.contribLabel }}</span></div>
+<input id="c-contrib" type="range" min="1" max="40" step="0.5" value="{{ c.contrib }}" onChange="{{ c.setContrib }}" aria-label="Monthly minimum contribution">
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ c.is3 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font:700 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#FF671F">STEP 3 · WHO PAYS WHICH PART?</div>
+<h2 style="font:900 30px/1.15 Lato,sans-serif;color:#3A312B;margin:9px 0 12px;letter-spacing:-.02em;text-wrap:pretty">Government pays <span style="color:#FF671F">{{ c.govEffLabel }}</span>.</h2>
+<p style="font:400 14.5px/1.6 Lato,sans-serif;color:#5E514D;margin:0 0 22px;max-width:58ch">Formal employees split contributions with an employer. Where an informal worker does have one — a household employing a domestic worker, a contractor putting out piece work — that share comes off before any subsidy.</p>
+<div style="display:flex;height:70px;border-radius:9px;overflow:hidden;margin-bottom:12px">
+<sc-if value="{{ c.hasEmployer }}" hint-placeholder-val="{{ false }}">
+<div style="width:{{ c.employerBar }};background:#5E514D;display:flex;flex-direction:column;justify-content:center;padding:0 16px;min-width:0">
+<span style="font:700 10px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:rgba(255,255,255,.75)">EMPLOYER</span>
+<span class="tnum" style="font:900 20px Lato,sans-serif;color:#fff">{{ c.employerAmt }}</span>
+</div>
+</sc-if>
+<div style="width:{{ c.govBar }};background:#FF671F;display:flex;flex-direction:column;justify-content:center;padding:0 16px;min-width:0">
+<span style="font:700 10px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#2A211B">GOVERNMENT</span>
+<span class="tnum" style="font:900 20px Lato,sans-serif;color:#2A211B">{{ c.govAmt }}</span>
+</div>
+<div style="flex:1;background:#8E8C13;display:flex;flex-direction:column;justify-content:center;padding:0 16px;min-width:0">
+<span style="font:700 10px 'IBM Plex Mono',monospace;letter-spacing:.06em;color:#fff">WORKER</span>
+<span class="tnum" style="font:900 20px Lato,sans-serif;color:#fff">{{ c.workerAmt }}</span>
+</div>
+</div>
+<div style="margin-bottom:16px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-employer" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Employer's share of the contribution</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.employerLabel }}</span></div>
+<input id="c-employer" type="range" min="0" max="100" step="5" value="{{ c.employerShare }}" onChange="{{ c.setEmployer }}" aria-label="Employer share of the contribution">
+<p style="font:400 12px/1.5 Lato,sans-serif;color:#796E65;margin:7px 0 0;max-width:64ch">{{ c.employerNote }}</p>
+</div>
+<div style="margin-bottom:18px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-gov" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Government share of the contribution</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.govPctLabel }}</span></div>
+<input id="c-gov" type="range" min="0" max="100" step="5" value="{{ c.govShare }}" onChange="{{ c.setGov }}" aria-label="Government share of contribution">
+</div>
+<div style="background:#F3EDE1;border-left:3px solid #8B5B29;padding:12px 15px;border-radius:0 7px 7px 0;font:400 12.5px/1.55 Lato,sans-serif;color:#5E514D;max-width:62ch;margin-bottom:18px">{{ c.shareNote }}</div>
+<div style="border-top:1px solid rgba(94,81,77,.14);padding-top:16px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><label for="c-taper" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Government starts reducing the subsidy after</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.taperLabel }}</span></div>
+<input id="c-taper" type="range" min="0" max="{{ c.taperMax }}" step="1" value="{{ c.taper }}" onChange="{{ c.setTaper }}" aria-label="Year the government starts reducing the subsidy">
+<div style="position:relative;padding:10px 2px 22px 0;margin-top:2px">
+<div style="position:relative;height:56px">
+<sc-for list="{{ c.taperCurve }}" as="t" hint-placeholder-count="10">
+<div style="position:absolute;bottom:0;left:{{ t.pct }};transform:translateX(-50%);width:11px;height:{{ t.h }};background:{{ t.fill }};border-radius:2px 2px 0 0"></div>
+</sc-for>
+<div style="position:absolute;left:0;right:0;bottom:0;border-bottom:1px solid rgba(94,81,77,.25)"></div>
+<sc-for list="{{ c.taperCurve }}" as="t" hint-placeholder-count="10">
+<div style="position:absolute;top:100%;left:{{ t.pct }};transform:translateX(-50%);padding-top:5px;font:500 9px 'IBM Plex Mono',monospace;color:#796E65">{{ t.label }}</div>
+</sc-for>
+</div>
+</div>
+<div style="font:400 11.5px Lato,sans-serif;color:#796E65;margin-bottom:10px">Government share of each full contribution, by year — {{ c.startShareLabel }} at the start, {{ c.finalShareLabel }} in year {{ c.years }}.</div>
+<div style="background:#EFDBB2;border-left:3px solid #FF671F;padding:12px 15px;border-radius:0 7px 7px 0;font:400 12.5px/1.55 Lato,sans-serif;color:#5E514D;max-width:64ch">{{ c.taperNote }}</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ c.is4 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font:700 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#FF671F">STEP 4 · HOW MANY SIGN UP?</div>
+<h2 style="font:900 30px/1.15 Lato,sans-serif;color:#3A312B;margin:9px 0 12px;letter-spacing:-.02em;text-wrap:pretty">By year {{ c.years }}, <span style="color:#FF671F">{{ c.coverM }}</span> workers are contributing.</h2>
+<p style="font:400 14.5px/1.6 Lato,sans-serif;color:#5E514D;margin:0 0 18px;max-width:58ch">Take-up is what drives cost — not the subsidy rate. Nobody enrols everyone in year one.</p>
+<div style="position:relative;padding:9px 4px 24px 66px;margin-bottom:8px">
+<div style="position:relative;aspect-ratio:608 / 170">
+<svg viewBox="0 0 608 170" style="position:absolute;inset:0;width:100%;height:100%;display:block" role="img" aria-label="Workers enrolled by year">
+<sc-for list="{{ c.covTicks }}" as="y" hint-placeholder-count="3">
+<line x1="0" y1="{{ y.y }}" x2="608" y2="{{ y.y }}" stroke="rgba(94,81,77,.12)"></line>
+</sc-for>
+<sc-for list="{{ c.covBars }}" as="b" hint-placeholder-count="10">
+<rect x="{{ b.x }}" y="{{ b.y }}" width="{{ b.w }}" height="{{ b.h }}" fill="{{ b.fill }}" rx="2"></rect>
+</sc-for>
+</svg>
+<sc-for list="{{ c.covTicks }}" as="y" hint-placeholder-count="3">
+<div style="position:absolute;right:100%;top:{{ y.pct }};transform:translateY(-50%);padding-right:9px;white-space:nowrap;font:500 9.5px 'IBM Plex Mono',monospace;color:#796E65">{{ y.label }}</div>
+</sc-for>
+<sc-for list="{{ c.covBars }}" as="b" hint-placeholder-count="10">
+<div style="position:absolute;top:100%;left:{{ b.pct }};transform:translateX(-50%);padding-top:7px;font:500 9px 'IBM Plex Mono',monospace;color:#796E65">{{ b.label }}</div>
+</sc-for>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:18px">
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-signup" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Sign up immediately</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.signupLabel }}</span></div>
+<input id="c-signup" type="range" min="0" max="60" step="1" value="{{ c.signup }}" onChange="{{ c.setSignup }}" aria-label="Percentage signing up immediately">
+</div>
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-growth" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Added each year after</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.growthLabel }}</span></div>
+<input id="c-growth" type="range" min="0" max="10" step="0.5" value="{{ c.signupGrowth }}" onChange="{{ c.setGrowth }}" aria-label="Additional sign-up percentage per year">
+</div>
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-years" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Years modelled</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.years }}</span></div>
+<input id="c-years" type="range" min="3" max="35" step="1" value="{{ c.years }}" onChange="{{ c.setYears }}" aria-label="Years modelled">
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ c.is5 }}" hint-placeholder-val="{{ false }}">
+<div>
+<div style="font:700 9.5px 'IBM Plex Mono',monospace;letter-spacing:.12em;color:#FF671F">THE ANSWER</div>
+<h2 style="font:900 32px/1.12 Lato,sans-serif;color:#3A312B;margin:9px 0 18px;letter-spacing:-.025em;text-wrap:pretty">{{ c.headline }}</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:18px">
+<sc-for list="{{ c.summary }}" as="s" hint-placeholder-count="3">
+<div style="background:{{ s.bg }};border-radius:9px;padding:15px 16px">
+<div class="tnum" style="font:900 24px/1.05 Lato,sans-serif;color:{{ s.fg }};letter-spacing:-.02em">{{ s.value }}</div>
+<div style="font:400 12px/1.4 Lato,sans-serif;color:{{ s.sub }};margin-top:6px">{{ s.label }}</div>
+</div>
+</sc-for>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-bottom:18px">
+<sc-for list="{{ c.shares }}" as="sh" hint-placeholder-count="3">
+<div style="background:#fff;border:1px solid rgba(94,81,77,.16);border-radius:9px;padding:13px 15px;border-left:4px solid {{ sh.accent }}">
+<div class="tnum" style="font:900 21px/1.05 Lato,sans-serif;color:#3A312B;letter-spacing:-.02em">{{ sh.value }}</div>
+<div style="font:400 12px/1.4 Lato,sans-serif;color:#5E514D;margin-top:5px">{{ sh.label }}</div>
+<div style="font:500 10.5px 'IBM Plex Mono',monospace;color:#796E65;margin-top:3px">{{ sh.note }}</div>
+</div>
+</sc-for>
+</div>
+<p style="font:400 14px/1.6 Lato,sans-serif;color:#5E514D;margin:0 0 16px;max-width:60ch">{{ c.closing }}</p>
+<div style="background:#F3EDE1;border:1px solid rgba(94,81,77,.18);border-radius:9px;padding:15px 17px 17px;margin-bottom:18px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px">
+<span style="font:700 9.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#796E65">ECONOMIC ASSUMPTIONS</span>
+<span style="font:400 12px Lato,sans-serif;color:#5E514D">In today's money: <strong class="tnum" style="color:#8B5B29">{{ c.realTotal }}</strong> · if the contribution floor is uprated with inflation: <strong class="tnum" style="color:#8B5B29">{{ c.upratedTotal }}</strong></span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px 24px">
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-inflation" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Inflation rate</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.inflationLabel }}</span></div>
+<input id="c-inflation" type="range" min="-2" max="30" step="0.1" value="{{ c.inflation }}" onChange="{{ c.setInflation }}" aria-label="Inflation rate">
+</div>
+<div>
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-interest" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Interest on contributions</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.interestLabel }}</span></div>
+<input id="c-interest" type="range" min="0" max="20" step="0.5" value="{{ c.interest }}" onChange="{{ c.setInterest }}" aria-label="Interest rate on accumulated contributions">
+</div>
+<div>
+<div style="font:400 12.5px Lato,sans-serif;color:#5E514D;margin-bottom:6px">Denominator for "% of government spending"</div>
+<div style="display:flex;gap:6px">
+<sc-for list="{{ c.spendBasisToggle }}" as="o" hint-placeholder-count="2">
+<button onClick="{{ o.onClick }}" style="flex:1;padding:7px 8px;border-radius:6px;font:700 11.5px Lato,sans-serif;cursor:pointer;background:{{ o.bg }};color:{{ o.fg }};border:1px solid {{ o.bd }}">{{ o.label }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ c.spendAssumed }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:10px">
+<div style="display:flex;justify-content:space-between;align-items:baseline"><label for="c-spend" style="font:400 12.5px Lato,sans-serif;color:#5E514D">Assumed government spending</label><span class="tnum" style="font:700 13px 'IBM Plex Mono',monospace;color:#8B5B29">{{ c.spendLabel }}</span></div>
+<input id="c-spend" type="range" min="5" max="60" step="1" value="{{ c.spend }}" onChange="{{ c.setSpend }}" aria-label="Assumed government spending as a share of GDP">
+</div>
+</sc-if>
+</div>
+</div>
+<p style="font:400 11.5px/1.5 Lato,sans-serif;color:#796E65;margin:12px 0 0;max-width:70ch">{{ c.spendBasisNote }}</p>
+</div>
+<div style="display:flex;gap:10px;flex-wrap:wrap">
+<button onClick="{{ c.copy }}" style="background:#8B5B29;color:#fff;border:none;border-radius:7px;padding:11px 18px;font:700 13px Lato,sans-serif;cursor:pointer" style-hover="background:#FF671F;color:#2A211B">{{ c.copyLabel }}</button>
+<button onClick="{{ c.downloadCsv }}" style="background:#3A312B;color:#FBF8F3;border:none;border-radius:7px;padding:11px 18px;font:700 13px Lato,sans-serif;cursor:pointer" style-hover="background:#8E8C13;color:#fff">Download the data (CSV)</button>
+<button onClick="{{ c.restart }}" style="background:none;color:#5E514D;border:1px solid rgba(94,81,77,.3);border-radius:7px;padding:11px 18px;font:700 13px Lato,sans-serif;cursor:pointer" style-hover="border-color:#8B5B29;color:#8B5B29">Change the assumptions</button>
+</div>
+</div>
+</sc-if>
+
+<div style="margin-top:auto;padding-top:22px;border-top:1px solid rgba(94,81,77,.14)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px">
+<span style="font:700 9.5px 'IBM Plex Mono',monospace;letter-spacing:.1em;color:#796E65">SOURCES &amp; ASSUMPTIONS</span>
+<button onClick="{{ c.toggleNotes }}" style="background:none;border:1px solid rgba(94,81,77,.28);color:#5E514D;border-radius:6px;padding:4px 10px;font:700 10.5px Lato,sans-serif;cursor:pointer" style-hover="border-color:#8B5B29;color:#8B5B29">{{ c.notesSign }}</button>
+</div>
+<sc-if value="{{ c.notesOpen }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px 26px">
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font:700 11px Lato,sans-serif;color:#3A312B">Assumptions</span>
+<sc-for list="{{ c.assumptions }}" as="a" hint-placeholder-count="4">
+<p style="font:400 12px/1.55 Lato,sans-serif;color:#5E514D;margin:0;padding-left:11px;border-left:2px solid rgba(139,91,41,.35)">{{ a }}</p>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font:700 11px Lato,sans-serif;color:#3A312B">Data sources</span>
+<p style="font:400 12px/1.55 Lato,sans-serif;color:#5E514D;margin:0">{{ c.sourceNote }}</p>
+<sc-for list="{{ c.sourceLinks }}" as="l" hint-placeholder-count="2">
+<a href="{{ l.href }}" target="_blank" rel="noopener" style="font:400 12px/1.5 Lato,sans-serif;color:#8B5B29;word-break:break-word">{{ l.label }} ↗</a>
+</sc-for>
+<p style="font:400 11.5px/1.5 Lato,sans-serif;color:#796E65;margin:2px 0 0">Country figures beyond the World Bank indicators — subgroup sizes and employer shares — are structural placeholders pending WIEGO's own values.</p>
+</div>
+</div>
+</sc-if>
+</div>
+<div style="padding-top:20px;display:flex;align-items:center;justify-content:space-between;gap:14px">
+<button onClick="{{ c.back }}" style="background:none;border:none;padding:8px 0;font:700 13px Lato,sans-serif;color:{{ c.backFg }};cursor:{{ c.backCursor }}">← Back</button>
+<span style="font:400 11.5px Lato,sans-serif;color:#796E65">{{ c.progressLabel }}</span>
+<button onClick="{{ c.next }}" style="background:#FF671F;border:none;border-radius:7px;padding:11px 20px;font:900 13px Lato,sans-serif;color:#2A211B;cursor:pointer;visibility:{{ c.nextVis }}" style-hover="background:#8B5B29;color:#fff">{{ c.nextLabel }}</button>
+</div>
+</div>
+</div>
+</div>
+
+</div>
+<p class="dv-next">Five steps: who is covered · what a contribution costs · who pays which part · how many enrol · what it adds up to.</p>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;defaultCountry&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Kenya&quot;,&quot;Ghana&quot;,&quot;India&quot;,&quot;South Africa&quot;,&quot;Mexico&quot;,&quot;Peru&quot;],&quot;default&quot;:&quot;Kenya&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Defaults&quot;},&quot;defaultYears&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;min&quot;:3,&quot;max&quot;:35,&quot;default&quot;:10,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Defaults&quot;},&quot;startingPreset&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;No subsidy&quot;,&quot;Modest 25%&quot;,&quot;Matching 50/50&quot;,&quot;Fully subsidised&quot;],&quot;default&quot;:&quot;Matching 50/50&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Defaults&quot;}}">
+const CC = {
+  Kenya:{pop:54027487,growth:1.91,inflation:7.66,lfp:74.2,workingAge:59.32,gdp:113420008179,informal:80,spend:24,expPct:23.26,expLevel:"general government",expSrc:"IMF Regional Economic Outlook, 2024"},
+  Ghana:{pop:33475870,growth:1.90,inflation:23.2,lfp:66.5,workingAge:60.0,gdp:76370000000,informal:88,spend:22,expPct:23.18,expLevel:"general government",expSrc:"IMF Regional Economic Outlook, 2024"},
+  India:{pop:1428627663,growth:0.90,inflation:5.65,lfp:55.6,workingAge:67.8,gdp:3549900000000,informal:89,spend:15,expPct:14.77,expLevel:"central government",expSrc:"Reserve Bank of India, 2024"},
+  "South Africa":{pop:60414495,growth:0.90,inflation:6.0,lfp:59.9,workingAge:66.1,gdp:380700000000,informal:34,spend:32,expPct:32.98,expLevel:"general government",expSrc:"IMF Regional Economic Outlook, 2024"},
+  Mexico:{pop:128455567,growth:0.80,inflation:5.5,lfp:61.5,workingAge:67.5,gdp:1789000000000,informal:55,spend:26,expPct:30.32,expLevel:"general government",expSrc:"IMF, 2024"},
+  Peru:{pop:34352719,growth:1.00,inflation:6.3,lfp:74.5,workingAge:67.3,gdp:267600000000,informal:76,spend:21,expPct:21.41,expLevel:"general government",expSrc:"IMF Regional Economic Outlook, 2024"}
+};
+const NUM = new Intl.NumberFormat("en-US");
+function num(v){return NUM.format(Math.round(v));}
+function money(v){
+  const a=Math.abs(v);
+  if(a>=1e9) return "$"+(v/1e9).toFixed(a>=1e10?0:1)+"bn";
+  if(a>=1e6) return "$"+(v/1e6).toFixed(a>=1e8?0:1)+"m";
+  if(a>=1e3) return "$"+Math.round(v/1e3)+"k";
+  return "$"+v.toFixed(0);
+}
+function usd(v){return "$"+num(v);}
+function dollars(v){return v>=10||v%1===0 ? "$"+v.toFixed(0) : "$"+v.toFixed(2);}
+function people(v){
+  if(v>=1e6) return (v/1e6).toFixed(1)+" million";
+  if(v>=1e3) return Math.round(v/1e3)+" thousand";
+  return num(v);
+}
+
+function runModel(p){
+  const c = CC[p.country] || CC.Kenya;
+  const N = Math.max(1, Math.round(p.years));
+  const rows=[]; let cum=0, cumReal=0, cumUprated=0, cumWorker=0, cumEmployer=0;
+  for(let t=1;t<=N;t++){
+    const pop = c.pop*Math.pow(1+c.growth/100,t-1);
+    const informal = pop*(p.workingAge/100)*(p.lfp/100)*(p.informal/100);
+    const eligible = p.subgroup ? informal*(p.subgroupPct/100) : informal;
+    const signup = Math.max(0, Math.min(100, p.signup + p.signupGrowth*(t-1)));
+    const enrolled = eligible*signup/100;
+    const emp = Math.max(0, Math.min(100, p.employerShare||0))/100;
+    let share = (p.govShare/100)*(1-emp);
+    if(t > p.decreaseAfter){
+      const span = Math.max(1, N - p.decreaseAfter);
+      share = share*Math.max(0, 1 - (t-p.decreaseAfter)/span);
+    }
+    const annual = 12*p.contrib;
+    const annualReal = annual*Math.pow(1+p.inflation/100,t-1);
+    const gov = enrolled*annual*share;
+    const employer = enrolled*annual*emp;
+    const worker = enrolled*annual*Math.max(0,1-share-emp);
+    const defl = Math.pow(1+p.inflation/100, t-1);
+    cum += gov; cumReal += gov/defl; cumUprated += enrolled*annualReal*share; cumWorker += worker; cumEmployer += employer;
+    rows.push({t:t,year:2026+t-1,pop:pop,informal:informal,eligible:eligible,enrolled:enrolled,signup:signup,share:share*100,gov:gov,worker:worker,employer:employer,employerShare:emp*100,cum:cum});
+  }
+  const last = rows[rows.length-1];
+  const spend = c.gdp*((p.spendBasis==="assumed" ? p.spend : c.expPct)/100);
+  let fund=0, wPaid=0, gPaid=0, ePaid=0;
+  for(let t=1;t<=N;t++){
+    const annual = 12*p.contrib, sh = rows[t-1].share/100;
+    const em=(Math.max(0,Math.min(100,p.employerShare||0)))/100;
+    wPaid += annual*Math.max(0,1-sh-em); gPaid += annual*sh; ePaid += annual*em;
+    fund = (fund+annual)*(1+p.interest/100);
+  }
+  return {rows:rows,N:N,c:c,last:last,spend:spend,total:cum,totalReal:cumReal,totalUprated:cumUprated,totalWorker:cumWorker,
+    pctSpend:(cum/N)/spend*100, pctGdp:(cum/N)/c.gdp*100, spendUsed:spend, spendPctGdp:spend/c.gdp*100, totalPctGdp:cum/c.gdp*100, perWorker:{worker:wPaid,gov:gPaid,employer:ePaid,fund:fund}, totalEmployer:cumEmployer};
+}
+
+function ticks(max,H,fmt){
+  const out=[]; const step=max/4;
+  for(let i=0;i<=4;i++){const y=H-(i/4)*H; out.push({y:y.toFixed(1),pct:(100-(i/4)*100).toFixed(2)+"%",label:fmt(step*i)});}
+  return out;
+}
+function pctOf(i,n){return (n>1?(i/(n-1))*100:50).toFixed(3)+"%";}
+function linePath(vals,X0,W,H,max){
+  const n=vals.length; if(!n) return "";
+  const dx = n>1 ? (W-X0)/(n-1) : 0;
+  return vals.map(function(v,i){return (i?"L":"M")+(X0+i*dx).toFixed(1)+" "+(H-(v/max)*H).toFixed(1);}).join(" ");
+}
+
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    const country = props.defaultCountry || "Kenya";
+    const yrs = props.defaultYears || 10;
+    this.state = {
+      c:Object.assign(this.countryDefaults(country), {country:country,step:1,years:yrs,contrib:5,govShare:50,signup:8,signupGrowth:1.5,interest:6,decreaseAfter:yrs,subgroup:false,subgroupPct:60,subgroupName:"Self-employed only",employerShare:0,copied:false}),
+    };
+  }
+  countryDefaults(country){
+    const c = CC[country] || CC.Kenya;
+    return {workingAge:Math.round(c.workingAge*10)/10, lfp:c.lfp, informal:c.informal, inflation:c.inflation, spend:c.spend};
+  }
+  upd(slot,patch){ this.setState(s=>({[slot]:Object.assign({},s[slot],patch)})); }
+  paramsOf(s){
+    return {country:s.country,years:s.years,contrib:s.contrib,govShare:s.govShare,decreaseAfter:s.decreaseAfter===undefined?s.years:s.decreaseAfter,
+      signup:s.signup,signupGrowth:s.signupGrowth,subgroup:!!s.subgroup,subgroupPct:s.subgroupPct||50,
+      workingAge:s.workingAge,lfp:s.lfp,informal:s.informal,inflation:s.inflation,interest:s.interest,spend:s.spend,spendBasis:s.spendBasis||"actual",employerShare:s.employerShare||0};
+  }
+
+  buildC(){
+    const s=this.state.c, self=this;
+    const taper = Math.min(s.decreaseAfter===undefined?s.years:s.decreaseAfter, s.years);
+    const m = runModel(this.paramsOf(Object.assign({},s,{decreaseAfter:taper})));
+    const mNoTaper = runModel(this.paramsOf(Object.assign({},s,{decreaseAfter:s.years})));
+    const SUBGROUPS=[
+      {name:"Self-employed only",pct:60,employer:0,note:"Own-account workers — no employer to share the contribution."},
+      {name:"Domestic workers",pct:8,employer:50,note:"They have an employer: the household. Its share comes off the bill first."},
+      {name:"Street vendors & market traders",pct:12,employer:0,note:"Own-account traders, organised through associations that can carry enrolment."},
+      {name:"Home-based workers",pct:18,employer:35,note:"Sub-contracted piece-rate workers have a contractor who can be made liable."}
+    ];
+    const gdpPerCapita = m.c.gdp/m.c.pop;
+    const monthlyIncome = gdpPerCapita/12*0.55;
+    const stepDefs=["Workers","Contribution","Who pays","Take-up","Result"];
+    const dots=[]; for(let i=0;i<50;i++){dots.push({fill: i < Math.round(s.informal/2) ? "#FF671F" : "rgba(94,81,77,.18)"});}
+    const covW=608,covH=170;
+    const cv=m.rows.map(r=>r.enrolled), cMax=Math.max.apply(null,cv)*1.12||1;
+    const cn=cv.length, cgap=cn>20?2:Math.max(3,50/cn), cbw=(covW-(cn-1)*cgap)/cn, cEvery=Math.ceil(cn/12);
+    const govAmt = s.contrib*s.govShare/100;
+    return {
+      country:s.country, steps:stepDefs.map((l,i)=>({label:String(i+1)+" "+l,
+        bar: s.step>=i+1 ? "#FF671F" : "rgba(94,81,77,.2)", fg: s.step===i+1 ? "#3A312B" : "#5E514D",
+        bg: s.step===i+1 ? "#EFDBB2" : "#F3EDE1", bd: s.step===i+1 ? "#8B5B29" : "rgba(94,81,77,.22)",
+        onClick:()=>self.upd("c",{step:i+1})})),
+      is1:s.step===1,is2:s.step===2,is3:s.step===3,is4:s.step===4,is5:s.step===5,
+      aboutOpen:s.aboutOpen!==false,
+      notesOpen:!!s.notesOpen,
+      notesSign:s.notesOpen ? "Hide" : "Show",
+      toggleNotes:()=>self.upd("c",{notesOpen:!s.notesOpen}),
+      assumptions:[
+        "Population growth, workforce participation, inflation and so on are kept constant throughout the simulation.",
+        "It is assumed that informal workers will contribute the minimum and the government will match that according to the government share.",
+        "Percentage of informal workers who sign up for social security immediately: refers to how many people will sign up immediately upon introduction of the program.",
+        "Additional sign up percentage per year: additional percentage points of how many informal workers will sign up each year following the introduction. Presumably the participation rate will slowly increase with time."
+      ],
+      sourceNote:"World Bank data retrieved via the World Bank API using the wbstats R package. Government expenditure for "+s.country+": "+m.c.expLevel+", "+m.c.expPct+"% of GDP ("+m.c.expSrc+").",
+      sourceLinks:[
+        {label:"World Bank API documentation",href:"https://documents.worldbank.org/en/publication/documents-reports/api"},
+        {label:"wbstats R package vignette",href:"https://cran.r-project.org/web/packages/wbstats/vignettes/wbstats.html"}
+      ],
+      aboutSign:s.aboutOpen!==false ? "Hide" : "What is this?",
+      toggleAbout:()=>self.upd("c",{aboutOpen:s.aboutOpen===false}),
+      informal:s.informal, informalPct:s.informal+"%", informalM:people(m.rows[0].informal), dots:dots,
+      setInformal:e=>self.upd("c",{informal:parseFloat(e.target.value)}),
+      subgroupOn:s.subgroup, subgroupOff:!s.subgroup, subgroupEmployerNote:(s.employerShare||0)>0?"This group has an employer — set its share in step 3 before the subsidy applies.":"",
+      subgroupHasEmployer:(s.employerShare||0)>0, subgroupPct:s.subgroupPct, subgroupPctLabel:s.subgroupPct+"% of informal workers",
+      eligibleM:people(m.rows[0].eligible),
+      scopeLabel: s.subgroup ? s.subgroupName : "All workers in informal employment",
+      scopeToggle:[
+        {label:"Everyone informal",onClick:()=>self.upd("c",{subgroup:false,employerShare:0}),
+          bg:s.subgroup?"transparent":"#3A312B",fg:s.subgroup?"#5E514D":"#FBF8F3",bd:s.subgroup?"rgba(94,81,77,.3)":"#3A312B"},
+        {label:"One subgroup",onClick:()=>self.upd("c",{subgroup:true}),
+          bg:s.subgroup?"#3A312B":"transparent",fg:s.subgroup?"#FBF8F3":"#5E514D",bd:s.subgroup?"#3A312B":"rgba(94,81,77,.3)"}
+      ],
+      subgroups:SUBGROUPS.map(g=>{const on=s.subgroup&&s.subgroupName===g.name;
+        return {name:g.name,note:g.note,
+          bg:on?"#EFDBB2":"#F3EDE1",bd:on?"#8B5B29":"rgba(94,81,77,.2)",fg:on?"#3A312B":"#5E514D",
+          onClick:()=>self.upd("c",{subgroup:true,subgroupName:g.name,subgroupPct:g.pct,employerShare:g.employer})};}),
+      setSubgroupPct:e=>self.upd("c",{subgroupPct:parseFloat(e.target.value)}),
+      inflation:s.inflation, inflationLabel:s.inflation+"%", interest:s.interest, interestLabel:s.interest+"%",
+      spend:s.spend, spendLabel:s.spend+"% of GDP",
+      spendAssumed:(s.spendBasis||"actual")==="assumed",
+      spendBasisToggle:[
+        {label:"Reported ("+m.c.expPct+"% of GDP)",onClick:()=>self.upd("c",{spendBasis:"actual"}),
+          bg:(s.spendBasis||"actual")==="actual"?"#3A312B":"transparent",fg:(s.spendBasis||"actual")==="actual"?"#FBF8F3":"#5E514D",bd:(s.spendBasis||"actual")==="actual"?"#3A312B":"rgba(94,81,77,.3)"},
+        {label:"Assume % of GDP",onClick:()=>self.upd("c",{spendBasis:"assumed"}),
+          bg:(s.spendBasis||"actual")==="assumed"?"#3A312B":"transparent",fg:(s.spendBasis||"actual")==="assumed"?"#FBF8F3":"#5E514D",bd:(s.spendBasis||"actual")==="assumed"?"#3A312B":"rgba(94,81,77,.3)"}
+      ],
+      spendUsedLabel:money(m.spendUsed), spendUsedPctGdp:m.spendPctGdp.toFixed(1)+"% of GDP",
+      spendBasisNote:(s.spendBasis||"actual")==="actual"
+        ? "Measured against "+s.country+"'s reported "+m.c.expLevel+" expenditure, "+m.c.expPct+"% of GDP ("+money(m.spendUsed)+" a year) — "+m.c.expSrc+". Held constant across the horizon."
+        : "Measured against an assumed "+s.spend+"% of GDP ("+money(m.spendUsed)+" a year) instead of the reported "+m.c.expPct+"%.",
+      pctSpendLabel:m.pctSpend.toFixed(2)+"%", pctGdpLabel:m.pctGdp.toFixed(3)+"%",
+      totalPctGdpLabel:m.totalPctGdp.toFixed(2)+"%",
+      gdpLabel:money(m.c.gdp),
+      setInflation:e=>self.upd("c",{inflation:parseFloat(e.target.value)}),
+      setInterest:e=>self.upd("c",{interest:parseFloat(e.target.value)}),
+      setSpend:e=>self.upd("c",{spend:parseFloat(e.target.value)}),
+      realTotal:usd(Math.round(m.totalReal)), upratedTotal:usd(Math.round(m.totalUprated)),
+      setCountry:e=>self.upd("c",Object.assign(self.countryDefaults(e.target.value),{country:e.target.value})),
+      contrib:s.contrib, contribLabel:dollars(s.contrib), annualLabel:dollars(s.contrib*12),
+      incomeLabel:dollars(Math.round(monthlyIncome)), incomePct:(s.contrib/monthlyIncome*100).toFixed(1)+"%",
+      incomeBar:Math.min(100,s.contrib/monthlyIncome*100).toFixed(1)+"%",
+      setContrib:e=>self.upd("c",{contrib:parseFloat(e.target.value)}),
+      govShare:s.govShare, govPctLabel:s.govShare+"%",
+      employerShare:s.employerShare||0, employerLabel:(s.employerShare||0)+"%",
+      hasEmployer:(s.employerShare||0)>0, employerBar:(s.employerShare||0)+"%",
+      employerAmt:dollars(s.contrib*(s.employerShare||0)/100)+"/mo",
+      setEmployer:e=>self.upd("c",{employerShare:parseFloat(e.target.value)}),
+      govBar:Math.max(0,m.rows[0].share)+"%",
+      govEffLabel:m.rows[0].share.toFixed(0)+"% of the full contribution",
+      govAmt:dollars(s.contrib*m.rows[0].share/100)+"/mo",
+      workerAmt:dollars(Math.max(0,s.contrib*(100-m.rows[0].share-(s.employerShare||0))/100))+"/mo",
+      workerBar:Math.max(0,100-m.rows[0].share-(s.employerShare||0))+"%",
+      employerNote:(s.employerShare||0)>0
+        ? "The employer pays "+(s.employerShare||0)+"% first, so the government's "+s.govShare+"% applies to what is left: "+m.rows[0].share.toFixed(0)+"% of the full contribution. Total public cost over "+m.N+" years falls to "+money(m.total)+", with "+money(m.totalEmployer)+" carried by employers."
+        : "Own-account workers have no employer, so the split is only between the state and the worker. Pick a subgroup with an employer in step 1 to add a third payer.",
+      employerTotal:money(m.totalEmployer),
+      shareNote: s.govShare===0 ? "With no subsidy the worker pays the whole floor. This is the status quo in most voluntary schemes — and why coverage stalls."
+        : s.govShare>=100 ? "A fully paid contribution removes every affordability barrier, but crowds out other spending unless it tapers."
+        : s.govShare>=50 ? "At or above half, the state matches or beats what a formal employer would pay — the level that has actually moved coverage in Mongolia, Costa Rica and Cabo Verde."
+        : "Below half, the worker still carries more than a formal employee would. Expect take-up to lag.",
+      setGov:e=>self.upd("c",{govShare:parseFloat(e.target.value)}),
+      taper:taper, taperOn:taper<s.years,
+      taperLabel: taper>=s.years ? "Never — held flat" : "Year "+(taper+1),
+      setTaper:e=>self.upd("c",{decreaseAfter:parseInt(e.target.value,10)}),
+      taperMax:s.years,
+      taperCurve:m.rows.map(function(r,i){
+        return {pct:pctOf(i,m.rows.length), h:(r.share/Math.max(1,s.govShare)*100).toFixed(1)+"%",
+          fill: r.share < s.govShare-0.01 ? "rgba(255,103,31,.45)" : "#FF671F",
+          label:(i%Math.ceil(m.rows.length/10)===0||i===m.rows.length-1)?String(i+1):""};
+      }),
+      finalShareLabel: m.last.share.toFixed(0)+"%",
+      startShareLabel:m.rows[0].share.toFixed(0)+"%",
+      taperNote: taper>=s.years
+        ? "The subsidy stays at "+m.rows[0].share.toFixed(0)+"% of the full contribution"+((s.employerShare||0)>0?" — "+s.govShare+"% of the "+(100-(s.employerShare||0))+"% the employer does not cover":"")+" for the whole "+s.years+" years. Simple to administer, but the bill never falls — and it never asks workers whose earnings have grown to take on more."
+        : "From year "+(taper+1)+" the government share falls in a straight line from "+m.rows[0].share.toFixed(0)+"% of the full contribution to zero by year "+s.years+", reaching "+m.last.share.toFixed(0)+"% in the final year. Tapering saves "+money(mNoTaper.total-m.total)+" against holding it flat — the standard argument being that a subsidy is there to get workers in, not to pay for them forever.",
+      taperSaving: money(mNoTaper.total-m.total),
+      signup:s.signup, signupLabel:s.signup+"%", signupGrowth:s.signupGrowth, growthLabel:"+"+s.signupGrowth+"%/yr",
+      years:s.years, coverM:people(m.last.enrolled),
+      setSignup:e=>self.upd("c",{signup:parseFloat(e.target.value)}),
+      setGrowth:e=>self.upd("c",{signupGrowth:parseFloat(e.target.value)}),
+      setYears:e=>self.upd("c",{years:parseInt(e.target.value,10)}),
+      covTicks:ticks(cMax,covH,people),
+      covBars:cv.map(function(v,i){const h=(v/cMax)*covH,x=i*(cbw+cgap);
+        return {x:x.toFixed(1),w:cbw.toFixed(1),pct:((x+cbw/2)/covW*100).toFixed(3)+"%",y:(covH-h).toFixed(1),h:h.toFixed(1),
+          fill:i===cn-1?"#FF671F":"rgba(255,103,31,.45)",label:(i%cEvery===0||i===cn-1)?String(i+1):""};}),
+      headline: usd(Math.round(m.total))+" over "+m.N+" years — "+m.pctSpend.toFixed(2)+"% of what "+s.country+" already spends each year.",
+      summary:[
+        {value:usd(Math.round(m.total)),label:"Total public cost over "+m.N+" years",bg:"#3A312B",fg:"#FBF8F3",sub:"rgba(251,248,243,.62)"},
+        {value:people(m.last.enrolled),label:"Workers with a contribution record by year "+m.N,bg:"#EFDBB2",fg:"#3A312B",sub:"#5E514D"},
+        {value:usd(Math.round(m.perWorker.fund)),label:"Savings built up per worker who joins in year 1",bg:"#F3EDE1",fg:"#8B5B29",sub:"#5E514D"}
+      ],
+      shares:[
+        {value:m.pctSpend.toFixed(2)+"%",label:"of annual government expenditure",note:money(m.spendUsed)+" a year · "+((s.spendBasis||"actual")==="actual"?"reported":"assumed"),accent:"#FF671F"},
+        {value:m.pctGdp.toFixed(3)+"%",label:"of GDP, per year",note:money(m.c.gdp)+" GDP",accent:"#8E8C13"},
+        {value:m.totalPctGdp.toFixed(2)+"%",label:"of one year's GDP, over the whole "+m.N+" years",note:"cumulative",accent:"#8B5B29"}
+      ],
+      closing:"For "+m.pctSpend.toFixed(2)+"% of annual government spending, "+people(m.last.enrolled)+" workers in informal employment gain a contribution record, a savings balance and a claim on the benefits that record unlocks. The barrier is affordability, not willingness.",
+      copyLabel: s.copied ? "Summary copied ✓" : "Copy this summary",
+      downloadCsv:()=>{
+        const head="Year,Population,Informal workers,Enrolled workers,Government share %,Government cost,Employer cost,Worker cost,Cumulative government cost";
+        const body=m.rows.map(r=>[r.year,Math.round(r.pop),Math.round(r.informal),Math.round(r.enrolled),r.share.toFixed(1),Math.round(r.gov),Math.round(r.employer),Math.round(r.worker),Math.round(r.cum)].join(","));
+        const meta=["# "+s.country+" — WIEGO social security subsidy model",
+          "# Eligible group,"+(s.subgroup ? s.subgroupName : "All informal workers"),
+          "# Subgroup share of informal workers %,"+(s.subgroup ? s.subgroupPct : 100),
+          "# Government expenditure basis,"+((s.spendBasis||"actual")==="actual"?"reported "+m.c.expLevel+" expenditure ("+m.c.expSrc+")":"assumed % of GDP"),
+          "# Government expenditure used (USD/yr),"+Math.round(m.spendUsed),
+          "# Government spending % of GDP,"+m.spendPctGdp.toFixed(2),
+          "# Average annual cost % of gov expenditure,"+m.pctSpend.toFixed(3),
+          "# Average annual cost % of GDP,"+m.pctGdp.toFixed(4),
+          "# Cumulative cost % of one year GDP,"+m.totalPctGdp.toFixed(3),
+          "# Subsidy taper starts after year,"+(taper>=s.years ? "never" : taper),
+          "# Employer share %,"+(s.employerShare||0),
+          "# Total employer contributions,"+Math.round(m.totalEmployer),
+          "# Monthly minimum contribution,"+s.contrib,"# Government share %,"+s.govShare,
+          "# Immediate take-up %,"+s.signup,"# Take-up growth pp/yr,"+s.signupGrowth,
+          "# Informal employment %,"+s.informal,"# Inflation %,"+s.inflation,"# Interest %,"+s.interest,
+          "# Years,"+s.years,"# Total government cost,"+Math.round(m.total),""];
+        const blob=new Blob([meta.concat(head,body).join("\n")],{type:"text/csv;charset=utf-8"});
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement("a");
+        a.href=url;a.download="wiego-subsidy-"+s.country.toLowerCase().replace(/ /g,"-")+"-"+s.years+"yr.csv";a.click();
+        setTimeout(()=>URL.revokeObjectURL(url),2000);
+      },
+      copy:()=>{
+        const txt = s.country+" — social security subsidy for informal workers\n"
+          +"Eligible: "+(s.subgroup ? s.subgroupName+" ("+s.subgroupPct+"% of informal workers)" : "all workers in informal employment")+".\n"
+          +((s.employerShare||0)>0 ? "Employers pay "+s.employerShare+"% of each contribution first ("+money(m.totalEmployer)+" over the horizon), so the government's "+s.govShare+"% applies to the remainder.\n" : "")
+          +"Assumptions: $"+s.contrib+"/month minimum contribution, "+s.govShare+"% government share, "
+          +(taper>=s.years ? "subsidy held flat, " : "subsidy tapering from year "+(taper+1)+" to zero by year "+s.years+", ")
+          +s.signup+"% immediate take-up rising "+s.signupGrowth+"pp a year, "+s.years+"-year horizon, "
+          +s.inflation+"% inflation, "+s.interest+"% interest.\n"
+          +"Measured against "+((s.spendBasis||"actual")==="actual" ? "reported "+m.c.expLevel+" expenditure ("+m.c.expSrc+") of " : "an assumed "+s.spend+"% of GDP, ")
+          +money(m.spendUsed)+" a year.\n"
+          +"Cost: "+m.pctSpend.toFixed(2)+"% of annual government expenditure, "+m.pctGdp.toFixed(3)+"% of GDP a year, "
+          +m.totalPctGdp.toFixed(2)+"% of one year's GDP over the full horizon.\n"
+          +"Total government cost: "+usd(Math.round(m.total))+" ("+m.pctSpend.toFixed(2)+"% of annual government spending).\n"
+          +"Workers covered by year "+m.N+": "+num(m.last.enrolled)+".\n"
+          +"Accumulated savings per worker joining in year 1: "+usd(Math.round(m.perWorker.fund))+".";
+        if(navigator.clipboard) navigator.clipboard.writeText(txt);
+        self.upd("c",{copied:true});
+        setTimeout(()=>self.upd("c",{copied:false}),2200);
+      },
+      restart:()=>self.upd("c",{step:1}),
+      back:()=>self.upd("c",{step:Math.max(1,s.step-1)}),
+      next:()=>self.upd("c",{step:Math.min(5,s.step+1)}),
+      backFg:s.step===1?"rgba(94,81,77,.35)":"#5E514D", backCursor:s.step===1?"default":"pointer",
+      nextLabel:s.step===4?"See the cost →":"Next →", nextVis:s.step===5?"hidden":"visible",
+      progressLabel:"Step "+s.step+" of 5"
+    };
+  }
+
+  renderVals(){
+    return {countries:Object.keys(CC), c:this.buildC()};
+  }
+}
+
+</script>
+</body>
+</html>
