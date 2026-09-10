@@ -87,7 +87,7 @@
     }).join("");
     return `<div class="dv-header">
       <div class="identity-row">
-        <div class="dv-logo">WIEGO LOGO</div>
+        <img class="dv-logo" src="assets/wiego-logo.png" alt="WIEGO — Women in Informal Employment: Globalizing and Organizing">
         <div class="identity-text">
           <h1 class="site-title">Social Security Subsidy Cost Calculator</h1>
           <p class="site-desc">What it costs a government to co-pay social insurance contributions for workers in informal employment.</p>

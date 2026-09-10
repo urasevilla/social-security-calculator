@@ -63,21 +63,11 @@ button { font-family: Lato, system-ui, sans-serif; cursor: pointer; }
   gap: 20px;
 }
 
-/* Placeholder for wiego-logo.jpg (height:104px, width:auto, mix-blend-mode:
-   multiply) — swap this box for an <img> once the asset file is available. */
 .dv-logo {
-  width: 148px;
   height: 104px;
+  width: auto;
   flex: none;
-  border: 1px dashed rgba(94, 81, 77, .4);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: repeating-linear-gradient(135deg, rgba(94, 81, 77, .08) 0 6px, transparent 6px 12px);
-  font: 500 9px "IBM Plex Mono", monospace;
-  color: var(--warm-gray);
-  text-align: center;
+  display: block;
 }
 
 .identity-text {
