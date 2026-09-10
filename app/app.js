@@ -20,7 +20,7 @@
   let state = Object.assign(countryDefaults(DEFAULT_COUNTRY), {
     country: DEFAULT_COUNTRY,
     step: 1,
-    aboutOpen: true,
+    aboutOpen: false,
     notesOpen: false,
     copied: false,
     years: DEFAULT_YEARS,
@@ -41,7 +41,6 @@
   const LIVE_FORMAT = {
     informal: v => v + "%",
     subgroupPct: v => v + "% of informal workers",
-    contrib: v => dollars(v),
     employerShare: v => v + "%",
     govShare: v => v + "%",
     decreaseAfter: v => (v >= state.years ? "Never — held flat" : "Year " + (v + 1)),
@@ -87,27 +86,29 @@
       </button>`;
     }).join("");
     return `<div class="dv-header">
-      <div class="dv-logo">WIEGO LOGO</div>
+      <div class="identity-row">
+        <div class="dv-logo">WIEGO LOGO</div>
+        <div class="identity-text">
+          <h1 class="site-title">Social Security Subsidy Cost Calculator</h1>
+          <p class="site-desc">What it costs a government to co-pay social insurance contributions for workers in informal employment.</p>
+          <button type="button" class="ghost-btn-brown" data-action="toggle-about">${s.aboutOpen ? "Hide" : "What is this?"}</button>
+        </div>
+      </div>
       <div class="step-rail">${steps}</div>
     </div>`;
   }
 
   function renderIntro(s) {
-    const body = s.aboutOpen ? `
-      <div class="intro-body">
-        <p class="intro-p1">Social security is a human right and labour right for all workers, including workers in informal employment. For workers in formal wage employment, the affordability of social insurance contributions and adequacy of benefits is generally ensured by dividing contributions between themselves and their employer.</p>
-        <p class="intro-p2">Self-employed workers, on the other hand, are often expected to shoulder the entire burden of paying contributions, which results in unaffordably high contribution rates or contribution payments that are too low to yield adequate benefits. This is a major barrier for the nearly 80 percent of informal workers in developing countries that are self-employed.</p>
-        <p class="intro-p2">The most effective way to address this affordability gap is for governments to subsidize social insurance contributions for low-income informal workers. Global evidence shows that countries that have managed to significantly expand social insurance coverage to informal workers have recognized this and implemented various forms of subsidies.</p>
-        <p class="intro-p3">This calculator helps estimate the costs of different subsidy options, as well as the impacts of those on workers' social security benefits.</p>
-        <p class="intro-p4">Five steps: who is covered, what a contribution costs, who pays which part, how many enrol, and what it adds up to. Every figure updates as you change an assumption, and you can download the full year-by-year data at the end.</p>
-      </div>` : "";
+    if (!s.aboutOpen) return "";
     return `<div class="intro-wrap">
       <div class="intro-panel">
-        <div class="intro-head">
-          <h1 class="intro-title">Social Security Subsidy Cost Calculator</h1>
-          <button type="button" class="ghost-btn-brown" data-action="toggle-about">${s.aboutOpen ? "Hide" : "What is this?"}</button>
+        <div class="intro-body">
+          <p class="intro-p1">Social security is a human right and labour right for all workers, including workers in informal employment. For workers in formal wage employment, the affordability of social insurance contributions and adequacy of benefits is generally ensured by dividing contributions between themselves and their employer.</p>
+          <p class="intro-p2">Self-employed workers, on the other hand, are often expected to shoulder the entire burden of paying contributions, which results in unaffordably high contribution rates or contribution payments that are too low to yield adequate benefits. This is a major barrier for the nearly 80 percent of informal workers in developing countries that are self-employed.</p>
+          <p class="intro-p2">The most effective way to address this affordability gap is for governments to subsidize social insurance contributions for low-income informal workers. Global evidence shows that countries that have managed to significantly expand social insurance coverage to informal workers have recognized this and implemented various forms of subsidies.</p>
+          <p class="intro-p3">This calculator helps estimate the costs of different subsidy options, as well as the impacts of those on workers' social security benefits.</p>
+          <p class="intro-p4">Five steps: who is covered, what a contribution costs, who pays which part, how many enrol, and what it adds up to. Every figure updates as you change an assumption, and you can download the full year-by-year data at the end.</p>
         </div>
-        ${body}
       </div>
     </div>`;
   }
@@ -188,11 +189,12 @@
         <div class="income-labels"><span>Contribution ${dollars(s.contrib)}</span><span>Average monthly income ${dollars(Math.round(monthlyIncome))}</span></div>
       </div>
       <div class="ctrl-row">
-        <div class="ctrl-head">
-          <label for="c-contrib" class="ctrl-label">Monthly minimum contribution (worker + government)</label>
-          <span class="ctrl-value tnum" id="val-contrib">${dollars(s.contrib)}</span>
+        <label for="c-contrib" class="ctrl-label" style="display:block;margin-bottom:8px">Monthly minimum contribution (worker + government)</label>
+        <div class="contrib-input-group">
+          <span class="affix">$</span>
+          <input id="c-contrib" type="text" inputmode="decimal" value="${s.contrib}" data-key="contrib" aria-label="Monthly minimum contribution in US dollars, 0.5 to 500">
+          <span class="affix">/ month</span>
         </div>
-        <input id="c-contrib" type="range" min="1" max="40" step="0.5" value="${s.contrib}" data-key="contrib" aria-label="Monthly minimum contribution">
       </div>
     </div>`;
   }
@@ -326,14 +328,14 @@
             <label for="c-signup" class="ctrl-label">Sign up immediately</label>
             <span class="ctrl-value tnum" id="val-signup">${s.signup}%</span>
           </div>
-          <input id="c-signup" type="range" min="0" max="60" step="1" value="${s.signup}" data-key="signup" aria-label="Percentage signing up immediately">
+          <input id="c-signup" type="range" min="0" max="100" step="1" value="${s.signup}" data-key="signup" aria-label="Percentage signing up immediately">
         </div>
         <div class="ctrl-row">
           <div class="ctrl-head">
             <label for="c-growth" class="ctrl-label">Added each year after</label>
             <span class="ctrl-value tnum" id="val-signupGrowth">+${s.signupGrowth}%/yr</span>
           </div>
-          <input id="c-growth" type="range" min="0" max="10" step="0.5" value="${s.signupGrowth}" data-key="signupGrowth" aria-label="Additional sign-up percentage per year">
+          <input id="c-growth" type="range" min="0" max="100" step="0.5" value="${s.signupGrowth}" data-key="signupGrowth" aria-label="Additional sign-up percentage per year">
         </div>
         <div class="ctrl-row">
           <div class="ctrl-head">
@@ -350,34 +352,72 @@
     const m = d.m;
     const country = s.country;
     const spendBasis = s.spendBasis || "actual";
-    const headline = `${usd(Math.round(m.total))} over ${m.N} years — ${m.pctSpend.toFixed(2)}% of what ${country} already spends each year.`;
+    const headline = `${m.pctGdp.toFixed(3)}% of GDP a year would cover ${people(m.last.enrolled)} workers by year ${m.N}.`;
+    const subhead = `That's ${usd(Math.round(m.total))} in total public cost over ${m.N} years — ${m.pctSpend.toFixed(2)}% of ${country}'s annual government expenditure, or ${m.totalPctGdp.toFixed(2)}% of one year's GDP.`;
 
-    const summary = [
-      { value: usd(Math.round(m.total)), label: `Total public cost over ${m.N} years`, bg: "var(--ink)", fg: "var(--card)", sub: "rgba(251,248,243,.62)" },
-      { value: people(m.last.enrolled), label: `Workers with a contribution record by year ${m.N}`, bg: "var(--khaki-nude)", fg: "var(--ink)", sub: "var(--khaki-dark)" },
-      { value: usd(Math.round(m.perWorker.fund)), label: "Savings built up per worker who joins in year 1", bg: "var(--panel)", fg: "var(--brown)", sub: "var(--khaki-dark)" }
-    ];
-
-    const shares = [
-      { value: m.pctSpend.toFixed(2) + "%", label: "of annual government expenditure", note: `${money(m.spendUsed)} a year · ${spendBasis === "actual" ? "reported" : "assumed"}`, accent: "var(--orange)" },
-      { value: m.pctGdp.toFixed(3) + "%", label: "of GDP, per year", note: `${money(m.c.gdp)} GDP`, accent: "var(--green)" },
-      { value: m.totalPctGdp.toFixed(2) + "%", label: `of one year's GDP, over the whole ${m.N} years`, note: "cumulative", accent: "var(--brown)" }
-    ];
-
-    const closing = `For ${m.pctSpend.toFixed(2)}% of annual government spending, ${people(m.last.enrolled)} workers in informal employment gain a contribution record, a savings balance and a claim on the benefits that record unlocks. The barrier is affordability, not willingness.`;
+    const closing = `For that, ${people(m.last.enrolled)} workers in informal employment gain a contribution record and a savings balance — a worker who joins in year 1 builds up ${usd(Math.round(m.perWorker.fund))} by year ${m.N}. The barrier is affordability, not willingness.`;
 
     const spendBasisNote = spendBasis === "actual"
       ? `Measured against ${country}'s reported ${m.c.expLevel} expenditure, ${m.c.expPct}% of GDP (${money(m.spendUsed)} a year) — ${m.c.expSrc}. Held constant across the horizon.`
       : `Measured against an assumed ${s.spend}% of GDP (${money(m.spendUsed)} a year) instead of the reported ${m.c.expPct}%.`;
 
+    // Dual-axis chart: orange bars (annual public cost, left axis) + brown
+    // line (that year's cost as % of GDP, right axis), both on bar centres.
+    const chW = 608, chH = 168;
+    const rows = m.rows;
+    const cn = rows.length;
+    const cgap = cn > 20 ? 2 : Math.max(3, 50 / cn);
+    const cbw = (chW - (cn - 1) * cgap) / cn;
+    const cEvery = Math.ceil(cn / 12);
+    const govVals = rows.map(r => r.gov);
+    const pctVals = rows.map(r => r.gov / m.c.gdp * 100);
+    const leftMax = Math.max.apply(null, govVals) * 1.12 || 1;
+    const rightMax = Math.max.apply(null, pctVals) * 1.12 || 1;
+    const leftTicks = ticks(leftMax, chH, money);
+    const rightTicks = ticks(rightMax, chH, v => v.toFixed(3) + "%");
+    const bars = govVals.map((v, i) => {
+      const h = (v / leftMax) * chH, x = i * (cbw + cgap);
+      return {
+        x: x.toFixed(1), w: cbw.toFixed(1), y: (chH - h).toFixed(1), h: h.toFixed(1),
+        pct: ((x + cbw / 2) / chW * 100).toFixed(3) + "%",
+        label: (i % cEvery === 0 || i === cn - 1) ? String(rows[i].t) : ""
+      };
+    });
+    const linePts = pctVals.map((v, i) => ({
+      x: i * (cbw + cgap) + cbw / 2,
+      y: chH - (v / rightMax) * chH
+    }));
+    const linePath = linePts.map((p, i) => (i ? "L" : "M") + p.x.toFixed(1) + " " + p.y.toFixed(1)).join(" ");
+    const gridLines = leftTicks.map(y => `<line x1="0" y1="${y.y}" x2="${chW}" y2="${y.y}" stroke="rgba(94,81,77,.12)"></line>`).join("");
+    const barRects = bars.map(b => `<rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" fill="var(--orange)" rx="2"></rect>`).join("");
+    const dots = linePts.map(p => `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="3.2" fill="var(--brown)" stroke="var(--panel)" stroke-width="1.5"></circle>`).join("");
+    const leftLabels = leftTicks.map(y => `<div class="chart-ytick chart-ytick-left" style="top:${y.pct}">${y.label}</div>`).join("");
+    const rightLabels = rightTicks.map(y => `<div class="chart-ytick chart-ytick-right" style="top:${y.pct}">${y.label}</div>`).join("");
+    const xLabels = bars.map(b => `<div class="chart-xlabel" style="left:${b.pct}">${b.label}</div>`).join("");
+
     return `<div>
       <div class="eyebrow">THE ANSWER</div>
       <h2 class="answer-h2">${headline}</h2>
-      <div class="summary-grid">
-        ${summary.map(c => `<div class="summary-card" style="background:${c.bg}"><div class="value tnum" style="color:${c.fg}">${c.value}</div><div class="label" style="color:${c.sub}">${c.label}</div></div>`).join("")}
-      </div>
-      <div class="share-grid">
-        ${shares.map(sh => `<div class="share-card" style="border-left-color:${sh.accent}"><div class="value tnum">${sh.value}</div><div class="label">${sh.label}</div><div class="note">${sh.note}</div></div>`).join("")}
+      <p class="lead" style="max-width:62ch">${subhead}</p>
+      <div class="cost-chart-panel">
+        <div class="cost-chart-head">
+          <span class="cost-chart-title">Public cost, year by year</span>
+          <div class="cost-chart-legend">
+            <span class="legend-item"><span class="legend-swatch bar"></span>Total public cost</span>
+            <span class="legend-item"><span class="legend-swatch line"></span>% of GDP</span>
+          </div>
+        </div>
+        <div class="chart-wrap2">
+          <div class="chart-inner" style="aspect-ratio:${chW}/${chH}">
+            <svg viewBox="0 0 ${chW} ${chH}" role="img" aria-label="Annual public cost and its share of GDP, by year">
+              ${gridLines}${barRects}
+              <path d="${linePath}" fill="none" stroke="var(--brown)" stroke-width="2.5"></path>
+              ${dots}
+            </svg>
+            ${leftLabels}${rightLabels}${xLabels}
+          </div>
+        </div>
+        <p class="cost-chart-caption">Year of the programme · left axis total public cost, right axis share of GDP</p>
       </div>
       <p class="closing">${closing}</p>
       <div class="econ-panel">
@@ -589,11 +629,26 @@
     if (span && LIVE_FORMAT[key]) span.textContent = LIVE_FORMAT[key](v);
   });
 
+  el.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && e.target.id === "c-contrib") e.target.blur();
+  });
+
   el.addEventListener("change", function (e) {
     const t = e.target;
     if (t.tagName === "SELECT" && t.id === "c-country") {
       Object.assign(state, countryDefaults(t.value), { country: t.value });
       render();
+      return;
+    }
+    if (t.id === "c-contrib") {
+      // Free numeric entry (0.5-500): a non-numeric value is left exactly
+      // as typed, without touching the model, so the user can keep editing
+      // rather than having the field snap back mid-correction.
+      const parsed = parseFloat(t.value);
+      if (Number.isFinite(parsed)) {
+        state.contrib = Math.min(500, Math.max(0.5, parsed));
+        render();
+      }
       return;
     }
     if (t.tagName !== "INPUT" || t.type !== "range") return;

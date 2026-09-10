@@ -52,14 +52,22 @@ button { font-family: Lato, system-ui, sans-serif; cursor: pointer; }
   padding: 20px 30px 14px;
   border-bottom: 1px solid var(--hairline);
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 16px;
-  flex-wrap: wrap;
 }
 
+.identity-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+/* Placeholder for wiego-logo.jpg (height:104px, width:auto, mix-blend-mode:
+   multiply) — swap this box for an <img> once the asset file is available. */
 .dv-logo {
-  width: 90px;
-  height: 32px;
+  width: 148px;
+  height: 104px;
   flex: none;
   border: 1px dashed rgba(94, 81, 77, .4);
   border-radius: 4px;
@@ -67,17 +75,38 @@ button { font-family: Lato, system-ui, sans-serif; cursor: pointer; }
   align-items: center;
   justify-content: center;
   background: repeating-linear-gradient(135deg, rgba(94, 81, 77, .08) 0 6px, transparent 6px 12px);
-  font: 500 8px "IBM Plex Mono", monospace;
+  font: 500 9px "IBM Plex Mono", monospace;
   color: var(--warm-gray);
   text-align: center;
+}
+
+.identity-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 220px;
+}
+
+.site-title {
+  font: 900 21px/1.2 Lato, sans-serif;
+  color: var(--ink);
+  margin: 0;
+  letter-spacing: -.015em;
+}
+
+.site-desc {
+  font: 400 13px/1.5 Lato, sans-serif;
+  color: var(--khaki-dark);
+  margin: 0;
+  max-width: 46ch;
 }
 
 .step-rail {
   display: flex;
   gap: 5px;
-  flex: 1;
   flex-wrap: wrap;
-  min-width: 260px;
+  width: 100%;
 }
 
 .step-btn {
@@ -113,27 +142,13 @@ button { font-family: Lato, system-ui, sans-serif; cursor: pointer; }
 
 /* ---- Intro panel ---- */
 
-.intro-wrap { padding: 20px 34px 0; }
+.intro-wrap { padding: 18px 34px 0; }
 
 .intro-panel {
   background: var(--khaki-nude);
   border: 1px solid rgba(139, 91, 41, .3);
   border-radius: 10px;
   padding: 18px 20px 16px;
-}
-
-.intro-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-.intro-title {
-  font: 900 17px/1.25 Lato, sans-serif;
-  color: var(--ink);
-  margin: 0;
-  letter-spacing: -.01em;
 }
 
 .ghost-btn-brown {
@@ -153,7 +168,6 @@ button { font-family: Lato, system-ui, sans-serif; cursor: pointer; }
   display: flex;
   flex-direction: column;
   gap: 11px;
-  margin-top: 12px;
   max-width: 74ch;
 }
 .intro-body p { margin: 0; }
@@ -323,6 +337,30 @@ select {
 .income-bar-fill { background: var(--brown); height: 100%; }
 .income-labels { display: flex; justify-content: space-between; font: 400 11.5px Lato, sans-serif; color: var(--khaki-dark); margin-top: 7px; }
 
+.contrib-input-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 200px;
+  background: #fff;
+  border: 1px solid rgba(94, 81, 77, .3);
+  border-radius: 7px;
+  padding: 0 12px;
+  min-height: 40px;
+}
+.contrib-input-group .affix { font: 700 13px Lato, sans-serif; color: var(--khaki-dark); flex: none; }
+.contrib-input-group input {
+  border: none;
+  outline: none;
+  background: transparent;
+  font: 700 16px "IBM Plex Mono", monospace;
+  color: var(--ink);
+  width: 100%;
+  min-width: 0;
+  padding: 8px 0;
+}
+.contrib-input-group input:focus-visible { outline: 2px solid var(--brown); outline-offset: 2px; border-radius: 3px; }
+
 /* ---- Step 3 ---- */
 
 .pay-bar { display: flex; height: 70px; border-radius: 9px; overflow: hidden; margin-bottom: 12px; }
@@ -369,16 +407,19 @@ select {
 
 .answer-h2 { font: 900 32px/1.12 Lato, sans-serif; color: var(--ink); margin: 9px 0 18px; letter-spacing: -.025em; text-wrap: pretty; }
 
-.summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
-.summary-card { border-radius: 9px; padding: 15px 16px; }
-.summary-card .value { font: 900 24px/1.05 Lato, sans-serif; letter-spacing: -.02em; }
-.summary-card .label { font: 400 12px/1.4 Lato, sans-serif; margin-top: 6px; }
+.cost-chart-panel { background: var(--panel); border: 1px solid rgba(94, 81, 77, .18); border-radius: 10px; padding: 15px 17px 17px; margin-bottom: 18px; }
+.cost-chart-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
+.cost-chart-title { font: 700 12.5px Lato, sans-serif; color: var(--ink); }
+.cost-chart-legend { display: flex; gap: 14px; flex-wrap: wrap; }
+.legend-item { display: inline-flex; align-items: center; gap: 6px; font: 400 11px Lato, sans-serif; color: var(--khaki-dark); }
+.legend-swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; }
+.legend-swatch.bar { background: var(--orange); }
+.legend-swatch.line { width: 14px; height: 2.5px; border-radius: 1.5px; background: var(--brown); }
+.cost-chart-caption { font: 400 11.5px Lato, sans-serif; color: var(--warm-gray); margin: 4px 0 0; }
 
-.share-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 18px; }
-.share-card { background: #fff; border: 1px solid rgba(94, 81, 77, .16); border-radius: 9px; padding: 13px 15px; border-left: 4px solid; }
-.share-card .value { font: 900 21px/1.05 Lato, sans-serif; color: var(--ink); letter-spacing: -.02em; }
-.share-card .label { font: 400 12px/1.4 Lato, sans-serif; color: var(--khaki-dark); margin-top: 5px; }
-.share-card .note { font: 500 10.5px "IBM Plex Mono", monospace; color: var(--warm-gray); margin-top: 3px; }
+.chart-wrap2 { position: relative; padding: 9px 62px 24px; }
+.chart-ytick-left { position: absolute; right: 100%; transform: translateY(-50%); padding-right: 9px; white-space: nowrap; font: 500 9.5px "IBM Plex Mono", monospace; color: var(--orange); }
+.chart-ytick-right { position: absolute; left: 100%; transform: translateY(-50%); padding-left: 9px; white-space: nowrap; font: 500 9.5px "IBM Plex Mono", monospace; color: var(--brown); }
 
 .closing { font: 400 14px/1.6 Lato, sans-serif; color: var(--khaki-dark); margin: 0 0 16px; max-width: 60ch; }
 
@@ -431,7 +472,8 @@ select {
 .nav-next:hover { background: var(--brown); color: #fff; }
 
 @media (max-width: 560px) {
-  .summary-grid, .share-grid, .subgroup-grid { grid-template-columns: 1fr; }
+  .subgroup-grid { grid-template-columns: 1fr; }
+  .chart-wrap2 { padding-left: 48px; padding-right: 48px; }
 }
 
 @media (pointer: coarse) {
