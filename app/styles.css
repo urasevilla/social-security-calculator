@@ -261,6 +261,7 @@ select {
   min-height: 32px;
 }
 .toggle-btn.active { background: var(--ink); color: var(--card); border-color: var(--ink); }
+.toggle-btn:disabled { cursor: not-allowed; opacity: .5; }
 
 /* ---- Step 1 ---- */
 

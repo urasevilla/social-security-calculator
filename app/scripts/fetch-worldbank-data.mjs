@@ -1,93 +1,86 @@
 #!/usr/bin/env node
 /**
- * Refresh app/model.js's country table (CC) with live World Bank data.
+ * Regenerate app/model.js's CC country table from a *live* World Bank API
+ * call, covering every country (not just a hand-picked few).
  *
  * Sources (as specified by WIEGO for this calculator):
  *   https://documents.worldbank.org/en/publication/documents-reports/api
  *   https://cran.r-project.org/web/packages/wbstats/vignettes/wbstats.html
  *
  * This hits the same World Bank API (v2, JSON) that the wbstats R package
- * wraps, using mrnev=1 ("most recent non-empty value") per indicator so
- * each field lands on whatever year that country last reported it.
+ * wraps, querying country="all" and using mrnev=1 ("most recent
+ * non-empty value") per indicator so each field lands on whatever year
+ * that country last reported it. Real countries are distinguished from
+ * WB's regional/income-group aggregates via each row's `region.value`
+ * field (aggregates report region "Aggregates").
  *
  * Usage:  node app/scripts/fetch-worldbank-data.mjs
  * Requires network access to api.worldbank.org. Prints the regenerated
- * `CC` object to stdout — paste it into app/model.js in place of the
- * existing CC constant (or pipe/redirect and splice it in).
+ * `const CC = { ... }` block to stdout — paste it into app/model.js in
+ * place of the existing CC constant.
  *
- * NOTE: government expenditure (expPct/expLevel/expSrc) and informal
- * employment share (informal) are deliberately NOT fetched here — per the
- * design handoff README, those come from IMF/RBI and WIEGO/ILO
- * respectively, not the World Bank API. Keep the existing values for
- * those two fields when splicing in the refreshed output below.
+ * See lib/build-cc.mjs for the shared logic on informal-employment
+ * placeholders and unreported government expenditure (this script only
+ * handles getting World Bank fields out of the API).
  */
 
-const COUNTRIES = {
-  Kenya: "KE",
-  Ghana: "GH",
-  India: "IN",
-  "South Africa": "ZA",
-  Mexico: "MX",
-  Peru: "PE"
-};
+import { buildCCEntries, serializeCC } from "./lib/build-cc.mjs";
 
-// World Development Indicators used to populate CC.
 const INDICATORS = {
-  pop: "SP.POP.TOTL",           // Population, total
-  growth: "SP.POP.GROW",        // Population growth (annual %)
-  inflation: "FP.CPI.TOTL.ZG",  // Inflation, consumer prices (annual %)
-  lfp: "SL.TLF.CACT.ZS",        // Labor force participation rate, total (% ages 15+, modeled ILO estimate)
+  pop: "SP.POP.TOTL",              // Population, total
+  growth: "SP.POP.GROW",           // Population growth (annual %)
+  inflation: "FP.CPI.TOTL.ZG",     // Inflation, consumer prices (annual %)
+  lfp: "SL.TLF.CACT.ZS",           // Labor force participation rate, total (% ages 15+, modeled ILO estimate)
   workingAge: "SP.POP.1564.TO.ZS", // Population ages 15-64 (% of total population)
-  gdp: "NY.GDP.MKTP.CD"         // GDP (current US$)
+  gdp: "NY.GDP.MKTP.CD",           // GDP (current US$)
+  expPct: "GC.XPN.TOTL.GD.ZS"      // Expense (% of GDP) — general government, per IMF GFS Manual
 };
 
 const BASE = "https://api.worldbank.org/v2";
 
-async function fetchIndicator(iso2Codes, indicator) {
-  const url = `${BASE}/country/${iso2Codes.join(";")}/indicator/${indicator}?format=json&mrnev=1&per_page=200`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`${indicator}: HTTP ${res.status}`);
-  const json = await res.json();
-  const rows = json[1] || [];
-  const byCountry = {};
-  for (const row of rows) {
-    if (row.value === null || row.value === undefined) continue;
-    byCountry[row.country.value] = { value: row.value, year: row.date };
-  }
-  return byCountry;
+async function fetchIndicator(indicator) {
+  const byCode = {};
+  let page = 1, pages = 1;
+  do {
+    const url = `${BASE}/country/all/indicator/${indicator}?format=json&mrnev=1&per_page=400&page=${page}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`${indicator}: HTTP ${res.status}`);
+    const json = await res.json();
+    const meta = json[0] || {};
+    pages = meta.pages || 1;
+    for (const row of json[1] || []) {
+      if (row.value === null || row.value === undefined) continue;
+      if (row.region && row.region.value === "Aggregates") continue; // skip WB regional/income aggregates
+      byCode[row.countryiso3code || row.country.id] = { name: row.country.value, value: row.value, year: row.date };
+    }
+    page++;
+  } while (page <= pages);
+  return byCode;
 }
 
 async function main() {
-  const iso2Codes = Object.values(COUNTRIES);
   const results = {};
-  for (const [key, indicator] of Object.entries(INDICATORS)) {
-    results[key] = await fetchIndicator(iso2Codes, indicator);
+  for (const [field, indicator] of Object.entries(INDICATORS)) {
+    results[field] = await fetchIndicator(indicator);
   }
 
-  const lines = [];
-  lines.push("const CC = {");
-  for (const name of Object.keys(COUNTRIES)) {
-    const pop = results.pop[name];
-    const growth = results.growth[name];
-    const inflation = results.inflation[name];
-    const lfp = results.lfp[name];
-    const workingAge = results.workingAge[name];
-    const gdp = results.gdp[name];
-    if (!pop || !growth || !inflation || !lfp || !workingAge || !gdp) {
-      console.error(`Missing data for ${name}, skipping — check indicator availability.`);
-      continue;
+  const codes = new Set();
+  for (const byCode of Object.values(results)) for (const code of Object.keys(byCode)) codes.add(code);
+
+  const dataByCode = {};
+  for (const code of codes) {
+    const name = (results.pop[code] || results.gdp[code] || {}).name;
+    if (!name) continue;
+    dataByCode[code] = { name };
+    for (const field of Object.keys(INDICATORS)) {
+      const hit = results[field][code];
+      if (hit) dataByCode[code][field] = { value: hit.value, year: hit.year };
     }
-    lines.push(
-      `  ${JSON.stringify(name)}: { pop: ${Math.round(pop.value)}, growth: ${growth.value.toFixed(2)}, ` +
-      `inflation: ${inflation.value.toFixed(2)}, lfp: ${lfp.value.toFixed(1)}, workingAge: ${workingAge.value.toFixed(2)}, ` +
-      `gdp: ${Math.round(gdp.value)}, /* pop:${pop.year} growth:${growth.year} inflation:${inflation.year} lfp:${lfp.year} workingAge:${workingAge.year} gdp:${gdp.year} */ ` +
-      `informal: /* keep existing, WIEGO/ILO-sourced */ 0, spend: /* keep existing */ 0, ` +
-      `expPct: /* keep existing, IMF/RBI-sourced */ 0, expLevel: /* keep existing */ "", expSrc: /* keep existing */ "" },`
-    );
   }
-  lines.push("};");
-  console.log(lines.join("\n"));
-  console.log("\n// Fetched " + new Date().toISOString() + " from " + BASE);
+
+  const entries = buildCCEntries(dataByCode);
+  console.log(serializeCC(entries));
+  console.error(`\n${entries.length} countries with complete data, fetched ${new Date().toISOString()} from ${BASE}`);
 }
 
 main().catch(err => {

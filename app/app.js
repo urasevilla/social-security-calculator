@@ -33,8 +33,9 @@
     subgroup: false,
     subgroupName: "Self-employed only",
     subgroupPct: 60,
-    interest: 6,
-    spendBasis: "actual"
+    interest: 6
+    // spendBasis comes from countryDefaults(DEFAULT_COUNTRY) above — it
+    // depends on whether that country reports Expense (% of GDP).
   });
 
   const LIVE_FORMAT = {
@@ -402,7 +403,7 @@
           <div>
             <div class="ctrl-label" style="margin-bottom:6px">Denominator for "% of government spending"</div>
             <div class="toggle-group">
-              <button type="button" class="toggle-btn${spendBasis === "actual" ? " active" : ""}" style="flex:1" data-action="spend-actual">Reported (${m.c.expPct}% of GDP)</button>
+              <button type="button" class="toggle-btn${spendBasis === "actual" ? " active" : ""}" style="flex:1" data-action="spend-actual"${m.c.expReported ? "" : " disabled title=\"Not reported by the World Bank for this country\""}>${m.c.expReported ? `Reported (${m.c.expPct}% of GDP)` : "Not reported for this country"}</button>
               <button type="button" class="toggle-btn${spendBasis === "assumed" ? " active" : ""}" style="flex:1" data-action="spend-assumed">Assume % of GDP</button>
             </div>
             ${spendBasis === "assumed" ? `
@@ -433,7 +434,7 @@
       "Percentage of informal workers who sign up for social security immediately: refers to how many people will sign up immediately upon introduction of the program.",
       "Additional sign up percentage per year: additional percentage points of how many informal workers will sign up each year following the introduction. Presumably the participation rate will slowly increase with time."
     ];
-    const sourceNote = `World Bank data retrieved via the World Bank API using the wbstats R package. Government expenditure for ${s.country}: ${m.c.expLevel}, ${m.c.expPct}% of GDP (${m.c.expSrc}).`;
+    const sourceNote = `World Bank data (World Development Indicators), retrieved via the World Bank API / wbstats R package for population, growth, inflation, labor force participation, working-age share and GDP. Government expenditure for ${s.country}: ${m.c.expReported ? `${m.c.expLevel}, ${m.c.expPct}% of GDP (${m.c.expSrc})` : m.c.expSrc}.`;
     const body = s.notesOpen ? `
       <div class="sources-grid">
         <div class="sources-col">
@@ -445,7 +446,7 @@
           <p class="source-note">${sourceNote}</p>
           <a class="source-link" href="https://documents.worldbank.org/en/publication/documents-reports/api" target="_blank" rel="noopener">World Bank API documentation ↗</a>
           <a class="source-link" href="https://cran.r-project.org/web/packages/wbstats/vignettes/wbstats.html" target="_blank" rel="noopener">wbstats R package vignette ↗</a>
-          <p class="source-caveat">Country figures beyond the World Bank indicators — subgroup sizes and employer shares — are structural placeholders pending WIEGO's own values.</p>
+          <p class="source-caveat">Subgroup sizes and employer shares are structural placeholders pending WIEGO's own values. Informal employment share isn't a World Bank indicator — Kenya, Ghana, India, South Africa, Mexico and Peru use figures researched for this calculator; every other country defaults to a rough placeholder by income level, always adjustable with the slider above.</p>
         </div>
       </div>` : "";
     return `<div class="sources">
